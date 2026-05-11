@@ -120,14 +120,20 @@ Esse caminho possui `2` arestas. Logo, a altura da arvore e `2`.
 
 ## O que o codigo faz
 
-### 1. Cria a classe `No`
+### 1. Cria a classe `NoArvore`
 
 Cada no guarda duas coisas simples:
 
-- um nome;
+- um rotulo;
 - uma lista de filhos.
 
 Essa escolha e proposital para manter o foco nos conceitos mais basicos de arvore.
+
+No exemplo atual, os nomes foram deixados bem diretos para facilitar a explicacao em sala:
+
+- `getRotulo()` para ler o texto do no;
+- `getFilhos()` para acessar os filhos;
+- `adicionarFilho(...)` para ligar no pai.
 
 ### 2. Monta a arvore por etapas
 
@@ -156,25 +162,37 @@ No lojaOnline = new No("Loja Online");
 
 E por fim esses nos sao ligados aos seus pais.
 
-### 3. Identifica folhas
+### 3. Identifica folhas com `eFolha`
 
-O metodo `ehFolha` verifica se a lista de filhos esta vazia.
+O metodo `eFolha` verifica se a lista de filhos esta vazia.
 
 Se estiver vazia, significa que o no nao se divide mais.
 
-### 4. Calcula altura
+### 4. Calcula altura com `calcularAltura`
 
-O metodo `altura` procura o ramo mais profundo da arvore.
+O metodo `calcularAltura` procura o ramo mais profundo da arvore.
 
 Ele verifica a altura de cada filho e fica com a maior.
 
-### 5. Calcula profundidade
+### 5. Calcula profundidade com `calcularProfundidade`
 
-O metodo `profundidade` procura um nome dentro da arvore.
+O metodo `calcularProfundidade` procura um rotulo dentro da arvore.
 
 Cada vez que ele desce um nivel, soma `1`.
 
 Quando encontra o no procurado, devolve esse total.
+
+### 6. Calcula altura de um no especifico
+
+O metodo `calcularAlturaDeUmNo` faz duas etapas:
+
+1. busca o no pelo rotulo (`buscarNoPorRotulo`);
+2. calcula a altura a partir desse no (`calcularAltura`).
+
+Isso ajuda muito quando o aluno precisa responder:
+
+- "qual a altura da arvore inteira?";
+- "qual a altura do no Vendas?".
 
 ## Resumo didatico
 

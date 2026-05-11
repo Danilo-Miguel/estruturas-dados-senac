@@ -2,250 +2,212 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Exemplo simples para apresentar conceitos basicos de arvores.
+ * Exemplo didatico de arvore generica para iniciantes.
  *
- * A proposta aqui e montar a estrutura aos poucos, para deixar visivel a
- * construcao em etapas: primeiro a raiz, depois os filhos e por fim os netos.
+ * O foco e mostrar a estrutura em etapas e trabalhar conceitos basicos:
+ * raiz, no, folha, altura e profundidade.
  */
 public class ArvoreExemploSimples {
 
     /**
-     * Representa um no de uma arvore generica.
+     * No de uma arvore generica.
      *
-     * Neste primeiro contato, um no guarda:
-     * - um nome;
-     * - uma lista de filhos.
-     *
-     * Essa ideia e suficiente para estudar raiz, no, folha, altura e profundidade.
+     * Cada no guarda um rotulo e uma lista de filhos.
      */
-    private static class No {
-        // Nome do no, usado para facilitar a leitura do exemplo.
-        private String nome;
+    private static class NoArvore {
+        private String rotulo;
+        private List<NoArvore> filhos;
 
-        // Lista com os filhos do no atual.
-        private List<No> filhos;
-
-        /**
-         * Cria um no com o nome informado.
-         *
-         * @param nome texto que identifica o no
-         */
-        private No(String nome) {
-            // Guarda o nome recebido.
-            this.nome = nome;
-
-            // Comeca com lista vazia, pois no inicio o no ainda nao tem filhos.
+        private NoArvore(String rotulo) {
+            this.rotulo = rotulo;
             this.filhos = new ArrayList<>();
         }
 
-        /**
-         * Adiciona um filho ao no atual.
-         *
-         * @param filho no que sera ligado como filho
-         */
-        private void adicionarFilho(No filho) {
-            // Coloca o novo filho na lista de filhos deste no.
+        private void adicionarFilho(NoArvore filho) {
             filhos.add(filho);
+        }
+
+        private String getRotulo() {
+            return rotulo;
+        }
+
+        private List<NoArvore> getFilhos() {
+            return filhos;
         }
     }
 
     /**
-     * Verifica se um no e folha.
-     *
-     * Folha e o no que nao possui filhos.
-     *
-     * @param no no que sera analisado
-     * @return true quando o no nao tem filhos; false caso contrario
+     * No folha e aquele que nao possui filhos.
      */
-    public static boolean ehFolha(No no) {
-        // Se o no nem existe, retornamos false neste material.
+    public static boolean eFolha(NoArvore no) {
         if (no == null) {
             return false;
         }
-
-        // Um no e folha quando sua lista de filhos esta vazia.
-        return no.filhos.isEmpty();
+        return no.getFilhos().isEmpty();
     }
 
     /**
-     * Conta quantos nos existem na arvore.
-     *
-     * @param raiz inicio da subarvore analisada
-     * @return quantidade total de nos
+     * Conta todos os nos da arvore.
      */
-    public static int contarNos(No raiz) {
-        // Arvore vazia nao tem nos.
+    public static int contarNos(NoArvore raiz) {
         if (raiz == null) {
             return 0;
         }
 
-        // Comecamos contando o proprio no atual.
         int total = 1;
-
-        // Depois somamos a quantidade de nos de cada filho.
-        for (No filho : raiz.filhos) {
+        for (NoArvore filho : raiz.getFilhos()) {
             total += contarNos(filho);
         }
-
-        // Retorna a soma final.
         return total;
     }
 
     /**
-     * Conta quantas folhas existem na arvore.
-     *
-     * @param raiz inicio da subarvore analisada
-     * @return quantidade de folhas
+     * Conta quantos nos folha existem na arvore.
      */
-    public static int contarFolhas(No raiz) {
-        // Se nao existe no, nao existe folha.
+    public static int contarFolhas(NoArvore raiz) {
         if (raiz == null) {
             return 0;
         }
 
-        // Se o no atual nao tem filhos, ele mesmo ja e uma folha.
-        if (ehFolha(raiz)) {
+        if (eFolha(raiz)) {
             return 1;
         }
 
-        // Acumula a quantidade de folhas encontradas nos filhos.
         int totalFolhas = 0;
-
-        // Percorre cada filho e soma as folhas dele.
-        for (No filho : raiz.filhos) {
+        for (NoArvore filho : raiz.getFilhos()) {
             totalFolhas += contarFolhas(filho);
         }
-
-        // Retorna a quantidade final de folhas.
         return totalFolhas;
     }
 
     /**
-     * Calcula a altura da arvore.
-     *
-     * Aqui a altura sera a quantidade de arestas no caminho mais longo da raiz
-     * ate uma folha.
-     *
-     * @param raiz inicio da subarvore analisada
-     * @return altura da arvore
+     * Altura = quantidade de arestas no caminho mais longo da raiz ate uma folha.
      */
-    public static int altura(No raiz) {
-        // Arvore vazia tem altura -1 para manter folha com altura 0.
+    public static int calcularAltura(NoArvore raiz) {
         if (raiz == null) {
             return -1;
         }
 
-        // Se nao tem filhos, o no atual ja e uma folha.
-        if (ehFolha(raiz)) {
+        if (eFolha(raiz)) {
             return 0;
         }
 
-        // Guarda a maior altura encontrada entre os filhos.
-        int maiorAlturaDosFilhos = -1;
-
-        // Calcula a altura de cada filho.
-        for (No filho : raiz.filhos) {
-            int alturaDoFilho = altura(filho);
-
-            // Atualiza a maior altura quando encontrar um valor maior.
-            if (alturaDoFilho > maiorAlturaDosFilhos) {
-                maiorAlturaDosFilhos = alturaDoFilho;
+        int maiorAlturaEntreFilhos = -1;
+        for (NoArvore filho : raiz.getFilhos()) {
+            int alturaFilhoAtual = calcularAltura(filho);
+            if (alturaFilhoAtual > maiorAlturaEntreFilhos) {
+                maiorAlturaEntreFilhos = alturaFilhoAtual;
             }
         }
-
-        // Soma 1 para considerar a descida do no atual ate o filho mais profundo.
-        return 1 + maiorAlturaDosFilhos;
+        return 1 + maiorAlturaEntreFilhos;
     }
 
     /**
-     * Encontra a profundidade de um no a partir do nome.
+     * Profundidade de um no a partir do seu rotulo.
      *
-     * @param raiz inicio da subarvore analisada
-     * @param nomeProcurado nome do no desejado
-     * @param nivelAtual profundidade acumulada ate o momento
-     * @return profundidade do no, ou -1 se ele nao existir
+     * A raiz tem profundidade 0.
      */
-    public static int profundidade(No raiz, String nomeProcurado, int nivelAtual) {
-        // Se o caminho terminou, o no nao foi encontrado aqui.
-        if (raiz == null) {
+    public static int calcularProfundidade(NoArvore raiz, String rotuloProcurado) {
+        return calcularProfundidadeRecursiva(raiz, rotuloProcurado, 0);
+    }
+
+    private static int calcularProfundidadeRecursiva(NoArvore atual, String rotuloProcurado, int nivelAtual) {
+        if (atual == null) {
             return -1;
         }
 
-        // Se encontramos o nome, devolvemos a profundidade atual.
-        if (raiz.nome.equals(nomeProcurado)) {
+        if (atual.getRotulo().equals(rotuloProcurado)) {
             return nivelAtual;
         }
 
-        // Procura o no desejado em cada filho.
-        for (No filho : raiz.filhos) {
-            int resultado = profundidade(filho, nomeProcurado, nivelAtual + 1);
-
-            // Se encontrou em algum filho, devolve o resultado imediatamente.
+        for (NoArvore filho : atual.getFilhos()) {
+            int resultado = calcularProfundidadeRecursiva(filho, rotuloProcurado, nivelAtual + 1);
             if (resultado != -1) {
                 return resultado;
             }
         }
-
-        // Se nenhum filho continha o nome, retornamos -1.
         return -1;
     }
 
     /**
-     * Exibe a arvore com recuo para mostrar a hierarquia.
+     * Altura de um no especifico.
      *
-     * @param raiz inicio da subarvore a ser exibida
-     * @param nivel nivel atual de recuo
+     * Se o no nao existir, retorna -1.
      */
-    public static void exibirArvore(No raiz, int nivel) {
-        // Se nao existe no, nao ha nada para mostrar.
+    public static int calcularAlturaDeUmNo(NoArvore raiz, String rotuloNo) {
+        NoArvore noEncontrado = buscarNoPorRotulo(raiz, rotuloNo);
+        if (noEncontrado == null) {
+            return -1;
+        }
+        return calcularAltura(noEncontrado);
+    }
+
+    private static NoArvore buscarNoPorRotulo(NoArvore atual, String rotuloProcurado) {
+        if (atual == null) {
+            return null;
+        }
+
+        if (atual.getRotulo().equals(rotuloProcurado)) {
+            return atual;
+        }
+
+        for (NoArvore filho : atual.getFilhos()) {
+            NoArvore encontrado = buscarNoPorRotulo(filho, rotuloProcurado);
+            if (encontrado != null) {
+                return encontrado;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Mostra a arvore com indentacao para facilitar a leitura visual.
+     */
+    public static void exibirArvore(NoArvore raiz, int nivel) {
         if (raiz == null) {
             return;
         }
 
-        // Imprime dois espacos por nivel para destacar a hierarquia.
         for (int i = 0; i < nivel; i++) {
             System.out.print("  ");
         }
 
-        // Mostra o nome do no atual.
-        System.out.println("- " + raiz.nome);
+        System.out.println("- " + raiz.getRotulo());
 
-        // Exibe cada filho em um nivel abaixo.
-        for (No filho : raiz.filhos) {
+        for (NoArvore filho : raiz.getFilhos()) {
             exibirArvore(filho, nivel + 1);
         }
     }
 
     /**
-     * Metodo principal com construcao gradual da arvore.
-     *
-     * @param args argumentos da linha de comando
+     * Monta uma arvore pequena por etapas para demonstrar os conceitos.
      */
     public static void main(String[] args) {
-        // PASSO 1: criar somente a raiz.
-        No raiz = new No("Empresa");
+        // Etapa 1: criar a raiz.
+        NoArvore raiz = new NoArvore("Empresa");
 
-        // PASSO 2: criar os filhos diretos da raiz.
-        No financeiro = new No("Financeiro");
-        No vendas = new No("Vendas");
-        No suporte = new No("Suporte");
+        // Etapa 2: criar os filhos diretos da raiz.
+        NoArvore setorFinanceiro = new NoArvore("Financeiro");
+        NoArvore setorVendas = new NoArvore("Vendas");
+        NoArvore setorSuporte = new NoArvore("Suporte");
 
-        // PASSO 3: ligar os filhos diretos na raiz.
-        raiz.adicionarFilho(financeiro);
-        raiz.adicionarFilho(vendas);
-        raiz.adicionarFilho(suporte);
+        // Etapa 3: ligar os filhos na raiz.
+        raiz.adicionarFilho(setorFinanceiro);
+        raiz.adicionarFilho(setorVendas);
+        raiz.adicionarFilho(setorSuporte);
 
-        // PASSO 4: criar nos de um nivel mais abaixo.
-        No contas = new No("Contas");
-        No cobranca = new No("Cobranca");
-        No lojaFisica = new No("Loja Fisica");
-        No lojaOnline = new No("Loja Online");
+        // Etapa 4: criar netos da raiz.
+        NoArvore contas = new NoArvore("Contas");
+        NoArvore cobranca = new NoArvore("Cobranca");
+        NoArvore lojaFisica = new NoArvore("Loja Fisica");
+        NoArvore lojaOnline = new NoArvore("Loja Online");
 
-        // PASSO 5: ligar os novos nos aos seus pais.
-        financeiro.adicionarFilho(contas);
-        financeiro.adicionarFilho(cobranca);
-        vendas.adicionarFilho(lojaFisica);
-        vendas.adicionarFilho(lojaOnline);
+        // Etapa 5: ligar cada no ao seu pai.
+        setorFinanceiro.adicionarFilho(contas);
+        setorFinanceiro.adicionarFilho(cobranca);
+        setorVendas.adicionarFilho(lojaFisica);
+        setorVendas.adicionarFilho(lojaOnline);
 
         // Desenho aproximado da arvore montada:
         //
@@ -258,29 +220,19 @@ public class ArvoreExemploSimples {
         // |  \- Loja Online
         // \- Suporte
 
-        // Mostra a estrutura inteira para facilitar a visualizacao.
         System.out.println("Arvore montada em etapas:\n");
         exibirArvore(raiz, 0);
 
-        // Explica quem e a raiz.
-        System.out.println("\nRaiz: " + raiz.nome);
-
-        // Mostra a quantidade total de nos.
+        System.out.println("\nRaiz: " + raiz.getRotulo());
         System.out.println("Quantidade total de nos: " + contarNos(raiz));
-
-        // Mostra a quantidade de folhas.
         System.out.println("Quantidade de folhas: " + contarFolhas(raiz));
-
-        // Mostra a altura da arvore.
-        System.out.println("Altura da arvore: " + altura(raiz));
-
-        // Mostra profundidades de alguns nos.
-        System.out.println("Profundidade de Empresa: " + profundidade(raiz, "Empresa", 0));
-        System.out.println("Profundidade de Vendas: " + profundidade(raiz, "Vendas", 0));
-        System.out.println("Profundidade de Loja Online: " + profundidade(raiz, "Loja Online", 0));
-
-        // Mostra exemplos de folha e de no interno.
-        System.out.println("\nContas e folha? " + ehFolha(contas));
-        System.out.println("Financeiro e folha? " + ehFolha(financeiro));
+        System.out.println("Altura da arvore: " + calcularAltura(raiz));
+        System.out.println("Profundidade de Empresa: " + calcularProfundidade(raiz, "Empresa"));
+        System.out.println("Profundidade de Vendas: " + calcularProfundidade(raiz, "Vendas"));
+        System.out.println("Profundidade de Loja Online: " + calcularProfundidade(raiz, "Loja Online"));
+        System.out.println("Altura do no Vendas: " + calcularAlturaDeUmNo(raiz, "Vendas"));
+        System.out.println("Altura do no Financeiro: " + calcularAlturaDeUmNo(raiz, "Financeiro"));
+        System.out.println("\nContas e folha? " + eFolha(contas));
+        System.out.println("Financeiro e folha? " + eFolha(setorFinanceiro));
     }
 }
